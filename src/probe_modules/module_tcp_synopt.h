@@ -203,11 +203,11 @@ static inline void tcpsynopt_process_packet_parse(
 				break;
 		case 253: // experimental
 		case 254:
-			unsigned int explength = 0xff & opts[i+1];
+			int explength = 0xff & opts[i+1];
 			snprintf(&buft[j],2,"EXP-"); j=j+4;
 			fs_modify_uint64(fs, "expid", (uint64_t) (ntohl(*(unsigned short*) &opts[i+2])));
 			fs_modify_uint64(fs, "explength", (uint64_t) explength);
-			i=i+ explength;
+			i=i+ (unsigned int)(0xff & opts[i+1]);
 			break;
 		case 64: // unknown option sent by us
 			snprintf(&buft[j],3,"U-"); j=j+2;
