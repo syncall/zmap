@@ -27,6 +27,8 @@ static fielddef_t fields[] = {
 		{.name = "mptcpkey", .type = "string", .desc = "tsval"},
 		{.name = "mptcpdiff", .type = "int", .desc = "tsval"},
 		{.name = "tfocookie", .type = "int", .desc = "tsval"},
+		{.name = "expid", .type = "int", .desc = "experimental option id"},
+		{.name = "explength", .type = "int", .desc = "experimental option length"},
 		{.name = "optionshex", .type = "string", .desc = "TCP options"},
 		{.name = "optionstext", .type = "string", .desc = "TCP options"},
 		{.name = "classification", .type="string", .desc = "packet classification"},
@@ -61,6 +63,9 @@ static inline void tcpsynopt_process_packet_parse(
 	fs_add_string(fs, "mptcpkey", (char*) "--",0);
 	fs_add_uint64(fs, "mptcpdiff", (uint64_t) 0);
 	fs_add_uint64(fs, "tfocookie", (uint64_t) 0);
+	fs_add_uint64(fs, "expid", (uint64_t) 0);
+	fs_add_uint64(fs, "explength", (uint64_t) 0);
+
 
 	ntohs(tcp->th_off);
 	// tcp->th_off = # of 32-bit words in header, of which 5 are basic header
