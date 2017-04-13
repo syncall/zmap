@@ -150,7 +150,7 @@ static inline void tcpsynopt_process_packet_parse(
 			}
 			break;
 		case 27: // Quick Start/ Response
-			snprintf(&buft[j],3,"QS-"); j=j+3;
+			snprintf(&buft[j],4,"QS-"); j=j+3;
 
 			fs_modify_uint64(fs, "qsfunc", (uint64_t)((*(unsigned char*) &opts[i+2]) >> 4));
 			fs_modify_uint64(fs, "qsttl", (uint64_t)(*(unsigned char*) &opts[i+3]));
@@ -186,7 +186,7 @@ static inline void tcpsynopt_process_packet_parse(
 					tfobuf = xmalloc(60); // 2(0x) + 16*2 (1byte=2hexzahlen) + delim
 					snprintf(&tfobuf[0],3,"0x");
 					for (unsigned int k=2;k<(unsigned int)(0xff & opts[i+1]) && ((2+(k-2)*2) < 40);k++){
-						snprintf(&tfobuf[2+(k-2)*2],3,"%02x",0xff & opts[i+k]); 
+						snprintf(&tfobuf[2+(k-2)*2],3,"%02x",0xff & opts[i+k]);
 					}
 					fs_modify_string(fs, "tfocookie", (char*)tfobuf,1);
 
@@ -195,11 +195,19 @@ static inline void tcpsynopt_process_packet_parse(
 					snprintf(&buft[j],6,"TFOE-"); j=j+5;
 				}
 				i=i+ (unsigned int)(0xff & opts[i+1]);
-				break;	
-		case 64: // unknown option sent by us								
-				snprintf(&buft[j],3,"U-"); j=j+2;
-				i=i+2;
-				break;									
+				break;
+		case 253: // experimental
+		case 254:
+			unsigned int explength = 0xff & opts[i+1];
+			snprintf(&buft[j],2,"EXP-"); j=j+4;
+			fs_modify_uint64(fs, "expid", (uint64_t) (ntohl(*(unsigned short*) &opts[i+2])));
+			fs_modify_uint64(fs, "explength", (uint64_t) explength);
+			i=i+ explength;
+			break;
+		case 64: // unknown option sent by us
+			snprintf(&buft[j],3,"U-"); j=j+2;
+			i=i+ (unsigned int)(0xff & opts[i+1]);
+			break;
 	// CASES THAT SHOULD NOT APPEAR
 		case 5: // SACK, only permitted in SYN
 				snprintf(&buft[j],2,"X"); j++;
@@ -232,15 +240,11 @@ static inline void tcpsynopt_process_packet_parse(
 		case 28: // obsolete
 				snprintf(&buft[j],2,"X"); j++;
 				i=i+4;
-				break;	
-		case 253: // experimental
-				snprintf(&buft[j],2,"X"); j++;
-				i=i+ (unsigned int)(0xff & opts[i+1]);
-				break;	
-		case 254: // experimental
-				snprintf(&buft[j],2,"X"); j++;
-				i=i+ (unsigned int)(0xff & opts[i+1]);
-				break;	
+				break;
+		case 29: // TODO TCP Authentication Option
+			snprintf(&buft[j],2,"X"); j++;
+			i=i+4;
+			break;
 		default: // even crazier crazyness ...  
 			// unrec. option
 			snprintf(&buft[j],3,"X-"); j=j+2;
