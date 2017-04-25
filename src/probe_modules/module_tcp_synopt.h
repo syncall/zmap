@@ -204,7 +204,7 @@ static inline void tcpsynopt_process_packet_parse(
 		case 253: // experimental
 		case 254:
 			snprintf(&buft[j],2,"EXP-"); j=j+4;
-			fs_modify_uint64(fs, "expid", (uint64_t) (ntohl(*(unsigned short*) &opts[i+2])));
+			fs_modify_uint64(fs, "expid", (uint64_t) (ntohs(*(unsigned short*) &opts[i+2])));
 			fs_modify_uint64(fs, "explength", (uint64_t) (0xff & opts[i+1]));
 			i=i+ (unsigned int)(0xff & opts[i+1]);
 			break;
