@@ -83,7 +83,7 @@ static inline void tcpsynopt_process_packet_parse(
 	}
 	// safety stop
 	buf[41*2+2] = '\0';
-	printf("options: %s \n", buf);
+	// printf("options: %s \n", buf);
 	unsigned int j=0;
 	// inspired by https://nmap.org/book/osdetect-methods.html
 	// ts rfc: https://www.ietf.org/rfc/rfc1323.txt

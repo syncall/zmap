@@ -205,7 +205,7 @@ void tcpsynopt_process_packet(const u_char *packet,
 	struct in_addr *s = (struct in_addr *) &(ip_hdr->ip_src);
 	strncpy(srcip, inet_ntoa(*s), IP_ADDR_LEN_STR - 1);
 	srcip[IP_ADDR_LEN_STR] = '\0';
-	printf("Parsing packet from %s\n", srcip);
+	// printf("Parsing packet from %s\n", srcip);
 
 	struct tcphdr *tcp = (struct tcphdr*)((char *)ip_hdr
 					+ 4*ip_hdr->ip_hl);
